@@ -2,7 +2,7 @@ class TasksController < ApplicationController
   before_action :set_task, only: [:show, :edit, :update, :destroy]
   
   def index
-    @tasks = Task.all
+    @tasks = Task.all.page(params[:page]).per(10)
   end
   
   def show
@@ -28,7 +28,6 @@ class TasksController < ApplicationController
   end
   
   def update
-    
     if @task.update(task_params)
       flash[:success] = 'タスクは正常に更新されました。'
       redirect_to tasks_path
