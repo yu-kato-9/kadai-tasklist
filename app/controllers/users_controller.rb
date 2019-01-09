@@ -1,15 +1,15 @@
 class UsersController < ApplicationController
-  before_action :require_user_logged_in, only: [:index, :show]
+  before_action :require_user_logged_in, only: [:show]
   
   def show
-    if params[:id] == current_user.id
-      id = params[:id]
+    if params[:id] == current_user.id.to_s
+      @user = User.find(params[:id])
+      @tasks = @user.tasks.order('created_at DESC').page(params[:page])
+      counts(@user)
     else
-      id = current_user.id
+      flash[:danger] = '他のユーザのプロフィールは表示できません。'
+      redirect_to root_url
     end
-    @user = User.find(id)
-    @tasks = @user.tasks.order('created_at DESC').page(params[:page])
-    counts(@user)
   end
 
   def new
