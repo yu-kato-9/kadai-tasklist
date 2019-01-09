@@ -1,12 +1,13 @@
 class UsersController < ApplicationController
   before_action :require_user_logged_in, only: [:index, :show]
   
-  def index
-    @users = User.all.page(params[:page])
-  end
-
   def show
-    @user = User.find(params[:id])
+    if params[:id] == current_user.id
+      id = params[:id]
+    else
+      id = current_user.id
+    end
+    @user = User.find(id)
     @tasks = @user.tasks.order('created_at DESC').page(params[:page])
     counts(@user)
   end
